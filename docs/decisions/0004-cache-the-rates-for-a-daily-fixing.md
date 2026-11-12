@@ -15,8 +15,8 @@ while the last fixing is still the valid one.
 
 ## Considered Options
 
-- Short caches on both layers (Worker 5 min, TanStack Query `staleTime` 30 min,
-  one retry), plus the last good rates kept in the Worker for a week
+- Short caches on both layers, plus the last good rates kept in the Worker for
+  a week (Worker 5 min, TanStack Query `staleTime` 30 min, one retry)
 - The same short caches, with an error whenever CNB is down
 - `stale-if-error` / `stale-while-revalidate` on the response
 - TanStack Query defaults, no Worker cache
@@ -24,7 +24,8 @@ while the last fixing is still the valid one.
 
 ## Decision Outcome
 
-Chosen option: "Short caches on both layers", because a new fixing shows up
+Chosen option: "Short caches on both layers, plus the last good rates kept in
+the Worker for a week", because a new fixing shows up
 within minutes of being published while CNB still gets very few requests.
 Computing "until the next fixing" would need the CNB holiday calendar for a
 gain nobody would notice. The app always shows the date from the file

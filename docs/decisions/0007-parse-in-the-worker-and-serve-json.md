@@ -13,7 +13,9 @@ tested function first, and decide where it runs once it was proven. With the
 app working end to end, the split showed two weaknesses. The input was checked
 in two places (the Worker looked at the column header, the browser did the
 real parse), and a file with a valid header but broken rows could be cached.
-Public rate services all do the parsing on the server and return JSON.
+The public rate services we looked at (Frankfurter, Wise, XE) parse on the
+server and return JSON. ADR 0002 named a second client as the reason to
+revisit it; there is none, and the move is made for the reasons above.
 
 ## Considered Options
 

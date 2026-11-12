@@ -22,8 +22,9 @@ runner that work with TypeScript 7.
 Chosen option: "Bun, oxlint, Prettier, Vitest", because oxlint is what the
 Vite template ships and works with TypeScript 7 directly, while
 typescript-eslint supports only TypeScript below 6.1. Biome would add a second
-toolchain next to Oxc, and oxfmt is still 0.x, so Prettier formats. Bun keeps
-installs fast and matches the author's other projects; Vitest stays the test
+toolchain next to Oxc, and oxfmt is still 0.x, so Prettier formats. Bun is one
+tool for installing, running scripts and `bunx`, pinned by `packageManager`
+with a text lockfile, and matches the author's other projects; Vitest stays the test
 runner because it is built on Vite and has jsdom and a Workers integration.
 
 ### Consequences
@@ -41,4 +42,5 @@ runner because it is built on Vite and has jsdom and a Workers integration.
 - typescript-eslint, supported TypeScript versions: https://typescript-eslint.io/users/dependency-versions
 - Oxc formatter: https://oxc.rs/docs/guide/usage/formatter
 - Vitest: https://vitest.dev/guide/
+- Bun, package manager: https://bun.sh/docs/cli/install
 - Bun, test runner: https://bun.sh/docs/cli/test
