@@ -117,7 +117,7 @@ jobs:
           base=https://momence.stadnik.dev
           for attempt in 1 2 3 4 5; do
             if curl -fsS "$base/" -o /dev/null \
-              && curl -fsS "$base/api/rates" | grep -q '^Country|Currency|Amount|Code|Rate$'; then
+              && curl -fsS "$base/api/rates" | grep -q '"rates":\[{"country"'; then
               echo "Production is up and serving CNB rates."
               exit 0
             fi

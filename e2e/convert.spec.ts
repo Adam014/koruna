@@ -1,8 +1,9 @@
 import { readFileSync } from 'node:fs'
 import { expect, test } from '@playwright/test'
+import { parseDailyRates } from '../src/rates/parse.ts'
 
-// The real file CNB served on 12 Nov 2026. Serving it instead of the live
-// CNB data keeps the test deterministic.
+// The real file CNB served on 12 Nov 2026, parsed as the Worker would.
+// Serving it instead of the live CNB data keeps the test deterministic.
 // https://playwright.dev/docs/mock#mock-api-requests
 const daily = readFileSync(
   new URL('../src/rates/__fixtures__/daily-2026-11-12.txt', import.meta.url),
@@ -13,7 +14,7 @@ test('lists the CNB rates and converts CZK as the user types', async ({
   page,
 }) => {
   await page.route('**/api/rates', (route) =>
-    route.fulfill({ body: daily, contentType: 'text/plain; charset=utf-8' }),
+    route.fulfill({ json: parseDailyRates(daily) }),
   )
   await page.goto('/')
 

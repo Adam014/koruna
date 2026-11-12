@@ -5,6 +5,10 @@ import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
 import daily from './rates/__fixtures__/daily-2026-11-12.txt?raw'
+import { parseDailyRates } from './rates/parse'
+
+// What the Worker returns for the fixture file.
+const rates = () => Response.json(parseDailyRates(daily))
 
 function renderApp() {
   // A fresh client per test; retries run at once instead of after a backoff.
@@ -33,7 +37,7 @@ afterEach(() => {
 
 describe('App', () => {
   it('loads the rates, shows the fixing date and converts', async () => {
-    vi.stubGlobal('fetch', async () => new Response(daily))
+    vi.stubGlobal('fetch', async () => rates())
     renderApp()
 
     expect(screen.getByText('Loading exchange rates…')).toBeInTheDocument()
@@ -50,7 +54,7 @@ describe('App', () => {
   })
 
   it('keeps the converter when a background refetch fails', async () => {
-    const fetchMock = vi.fn(async () => new Response(daily))
+    const fetchMock = vi.fn(async () => rates())
     vi.stubGlobal('fetch', fetchMock)
     const client = renderApp()
     await userEvent.type(await screen.findByLabelText('Amount in CZK'), '1000')
@@ -76,7 +80,7 @@ describe('App', () => {
       'Could not load the exchange rates.',
     )
 
-    fetchMock.mockImplementation(async () => new Response(daily))
+    fetchMock.mockImplementation(async () => rates())
     await userEvent.click(screen.getByRole('button', { name: 'Try again' }))
 
     expect(

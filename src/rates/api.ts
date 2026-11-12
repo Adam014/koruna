@@ -1,12 +1,15 @@
 import { queryOptions } from '@tanstack/react-query'
-import { parseDailyRates, type DailyRates } from './parse'
+import type { DailyRates } from './parse'
 
-/** Loads the CNB rates through the same-origin Worker (cnb.cz has no CORS). */
+/** Loads the CNB rates from the same-origin Worker (cnb.cz has no CORS). */
 export async function fetchRates(signal?: AbortSignal): Promise<DailyRates> {
   const response = await fetch('/api/rates', { signal })
   // fetch only rejects on network errors; a 4xx/5xx must fail the query too.
   if (!response.ok) throw new Error(`Rates request failed (${response.status})`)
-  return parseDailyRates(await response.text())
+  // The Worker built this JSON with parseDailyRates, so it is DailyRates by
+  // construction: one parser, at the boundary with CNB (docs/decisions/0007).
+  const rates: DailyRates = await response.json()
+  return rates
 }
 
 // CNB fixes rates once per working day (~14:30 Prague time), so the defaults

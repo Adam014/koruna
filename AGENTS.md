@@ -45,7 +45,8 @@ them and the dependencies current.
 ## Layout
 
 - `src/` – the React app (browser)
-- `worker/index.ts` – the only server code: `GET /api/rates` proxies CNB `daily.txt`
+- `worker/index.ts` – the only server code: `GET /api/rates` loads CNB `daily.txt`,
+  parses it and returns JSON
 - `wrangler.jsonc` – Worker config: static assets, SPA fallback, custom domain
 - `docs/` – requirements, decisions, local research
 
@@ -58,8 +59,9 @@ them and the dependencies current.
 - On weekends and holidays CNB silently returns the last fixing. Show the date
   from the file header, never "today".
 - The browser cannot call cnb.cz (no usable CORS); always go through `/api/rates`.
-- Parsing and conversion live in `src/` as pure functions; the Worker only
-  validates and forwards text.
+- Parsing and conversion live in `src/rates/` as pure functions. The Worker
+  parses with `parseDailyRates` and returns `DailyRates` as JSON; the app
+  never parses the CNB text itself (ADR 0007).
 - The zone `stadnik.dev` has a Cache Rule "respect origin TTL" for
   `momence.stadnik.dev`; without it Cloudflare rewrites `max-age` to 4 hours.
 
