@@ -118,3 +118,15 @@ Recorded as [MADR](https://adr.github.io/madr/) records with sources:
 React 19 with Hooks, TypeScript (strict), styled-components, TanStack Query,
 Vite. Vitest, Testing Library and Playwright for tests; oxlint and Prettier;
 Cloudflare Workers for hosting; GitHub Actions for CI with Dependabot.
+
+## AI-assisted development
+
+Built with Claude Code as a pair programmer. The setup is committed so it can
+be reviewed: [`AGENTS.md`](AGENTS.md) holds the rules every change follows,
+[`.claude/settings.json`](.claude/settings.json) runs Prettier on each edit and
+blocks the end of a turn until `tsc -b` passes, and [`.claude/`](.claude/)
+defines the review used before each commit: two agents list candidate
+defects independently, a third verifies them against the code, and only
+confirmed findings are fixed ([`.claude/review-evals/`](.claude/review-evals/)
+checks that these agents still catch known defects). Scope, decisions and
+every commit were approved by a human; production deploys only from CI.
