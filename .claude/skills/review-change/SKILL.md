@@ -31,10 +31,16 @@ Report only real problems you can point to in the diff; no speculation.
    config option you are not certain of, check the official docs, the package's
    own schema/types in `node_modules`, or the npm registry. Say which source.
 
+6. **Independent review.** Run the `code-reviewer` subagent in a fresh context.
+   Give it only the scope ("review the uncommitted change"), not your own
+   conclusions. Weigh each finding: reproduce it, then fix it or reject it with
+   a reason (speculative, out of scope, preference, not reproducible).
+
 ## Report (short)
 
 - **OK** – what is in line with the requirements and standards (one line each).
 - **Problems** – ordered by severity; each with file, why it matters, and the fix.
+- **Independent review** – each finding: fixed, or rejected and why.
 - **Verified** – what you checked and where.
 - **Deferred** – what is consciously left for later, and why.
 - Proposed commit message (Conventional Commits). Do not commit until the human
