@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { formatRate } from '../rates/format'
 import type { Rate } from '../rates/parse'
 import { theme } from '../theme/theme'
@@ -48,12 +48,14 @@ const cell = ({ $numeric }: { $numeric?: boolean }) => `
   white-space: ${$numeric ? 'nowrap' : 'normal'};
 
   @media (max-width: 559px) {
-    padding: 12px 16px;
+    padding: 12px;
   }
 `
 
 const Th = styled.th<{ $numeric?: boolean }>`
   ${cell}
+  /* A header may wrap on a phone; the numbers below never do. */
+  white-space: normal;
   font-size: 0.9375rem;
   font-weight: 600;
   color: ${theme.colors.muted};
@@ -61,6 +63,37 @@ const Th = styled.th<{ $numeric?: boolean }>`
 
 const Td = styled.td<{ $numeric?: boolean }>`
   ${cell}
+`
+
+// Reads "100 JPY = 13.783" under the "Rate (CZK)" header. The "=" is drawn by CSS at the cell's right
+// edge, so it lines up down the column and screen readers, which get the
+// column headers, skip it.
+const equalsGap = css`
+  position: relative;
+  padding-right: 48px;
+
+  @media (max-width: 559px) {
+    padding-right: 36px;
+  }
+`
+
+const AmountTh = styled(Th)`
+  ${equalsGap}
+`
+
+const AmountTd = styled(Td)`
+  ${equalsGap}
+
+  &::after {
+    content: '=';
+    position: absolute;
+    right: 16px;
+    color: ${theme.colors.muted};
+
+    @media (max-width: 559px) {
+      right: 10px;
+    }
+  }
 `
 
 const Currency = styled.span`
@@ -90,9 +123,9 @@ export function RatesTable({ rates }: { rates: Rate[] }) {
           <thead>
             <tr>
               <Th scope="col">Currency</Th>
-              <Th scope="col" $numeric>
+              <AmountTh scope="col" $numeric>
                 Amount
-              </Th>
+              </AmountTh>
               <Th scope="col" $numeric>
                 Rate (CZK)
               </Th>
@@ -112,7 +145,9 @@ export function RatesTable({ rates }: { rates: Rate[] }) {
                     </Names>
                   </Currency>
                 </Td>
-                <Td $numeric>{rate.amount}</Td>
+                <AmountTd $numeric>
+                  {rate.amount} <Muted>{rate.code}</Muted>
+                </AmountTd>
                 <Td $numeric>{formatRate(rate.rate)}</Td>
               </tr>
             ))}

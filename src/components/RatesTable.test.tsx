@@ -21,6 +21,6 @@ describe('RatesTable', () => {
       within(jpy)
         .getAllByRole('cell')
         .map((cell) => cell.textContent),
-    ).toEqual(['JPYJapan yen', '100', '13.783'])
+    ).toEqual(['JPYJapan yen', '100 JPY', '13.783'])
   })
 })
