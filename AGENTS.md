@@ -74,6 +74,10 @@ them and the dependencies current.
   accent from the logo, `#c8901a` light / `#f2b93b` dark, `#8a5d0b` for gold text
   on light backgrounds (contrast). Light and dark mode.
 - Keep it simple: no abstraction without a second use, no speculative options.
+- No hacks. Fix the cause with the documented, standard approach, never just
+  hide the symptom (empty `catch`, `as` casts, `!important`, timeouts, extra
+  retries, disabled lint rules). If a workaround is unavoidable, say so first,
+  then add a comment with the reason and a source.
 - Docs are English, short and specific. No company or person names from the brief.
 
 ## How we work
