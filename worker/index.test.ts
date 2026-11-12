@@ -99,20 +99,6 @@ describe('GET /api/rates', () => {
     expect(await second.json()).toEqual(parseDailyRates(daily))
   })
 
-  it('ignores plain text cached by the earlier Worker', async () => {
-    const oldKey = `${ORIGIN}/api/rates`
-    await caches.default.put(
-      oldKey,
-      new Response(daily, { headers: { 'Cache-Control': 'max-age=300' } }),
-    )
-    cnbAnswers(new Response(daily))
-
-    const response = await call('/api/rates')
-
-    expect(await response.json()).toEqual(parseDailyRates(daily))
-    await caches.default.delete(oldKey)
-  })
-
   it('answers HEAD with the headers only', async () => {
     cnbAnswers(new Response(daily))
 

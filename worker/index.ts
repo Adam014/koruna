@@ -73,9 +73,8 @@ export default {
 
     // Fixed keys, query strings ignored, so callers cannot bypass or pollute
     // the cache. The Cache API has no stale-if-error, so the last good rates
-    // are kept under a key of their own. The keys are not "/api/rates": the
-    // earlier Worker cached plain text there, and cache entries survive a
-    // deploy, so the new Worker would serve that text for up to 5 minutes.
+    // are kept under a key of their own. Cache entries survive a deploy, so a
+    // change of response format needs new key names.
     // https://developers.cloudflare.com/workers/runtime-apis/cache/
     const freshKey = new Request(`${url.origin}/api/rates/json`)
     const lastGoodKey = new Request(`${url.origin}/api/rates/last-good`)
