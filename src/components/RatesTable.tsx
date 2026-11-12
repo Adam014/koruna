@@ -24,8 +24,11 @@ const Heading = styled.h2`
 
 // The card has no padding of its own here: rows run edge to edge and each
 // cell pads itself.
+// On the narrowest screens the table scrolls inside the card rather than
+// widening the page.
 const TableCard = styled(Card)`
   padding: 8px 0;
+  overflow-x: auto;
 
   @media (max-width: 559px) {
     padding: 4px 0;
@@ -49,6 +52,14 @@ const cell = ({ $numeric }: { $numeric?: boolean }) => `
 
   @media (max-width: 559px) {
     padding: 12px;
+  }
+
+  @media (max-width: 359px) {
+    padding: 12px 8px;
+  }
+
+  @media (max-width: 299px) {
+    padding: 12px 6px;
   }
 `
 
@@ -77,6 +88,10 @@ const equalsGap = css`
   @media (max-width: 559px) {
     padding-right: 36px;
   }
+
+  @media (max-width: 359px) {
+    padding-right: 28px;
+  }
 `
 
 const AmountTh = styled(Th)`
@@ -96,6 +111,10 @@ const AmountTd = styled(Td)`
     @media (max-width: 559px) {
       right: 10px;
     }
+
+    @media (max-width: 359px) {
+      right: 8px;
+    }
   }
 `
 
@@ -103,10 +122,29 @@ const Currency = styled.span`
   display: flex;
   align-items: center;
   gap: 12px;
+
+  @media (max-width: 359px) {
+    gap: 8px;
+  }
+
+  /* Below 300px (a folded phone's cover screen) the code alone says enough. */
+  @media (max-width: 299px) {
+    & > :first-child {
+      display: none;
+    }
+  }
 `
 
 const Names = styled.span`
   display: grid;
+`
+
+// The code after the amount repeats the first column; very narrow screens
+// drop it so the table fits without scrolling.
+const Unit = styled(Muted)`
+  @media (max-width: 359px) {
+    display: none;
+  }
 `
 
 const Code = styled.span`
@@ -149,7 +187,7 @@ export function RatesTable({ rates }: { rates: Rate[] }) {
                   </Currency>
                 </Td>
                 <AmountTd $numeric>
-                  {rate.amount} <Muted>{rate.code}</Muted>
+                  {rate.amount} <Unit>{rate.code}</Unit>
                 </AmountTd>
                 <Td $numeric>{formatRate(rate.rate)}</Td>
               </tr>
