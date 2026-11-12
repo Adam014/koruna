@@ -11,6 +11,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
+    "deploy": "bun run build && wrangler deploy",
+    "cf-typegen": "wrangler types",
     "typecheck": "tsc -b",
     "lint": "oxlint",
     "format": "prettier --write .",
@@ -21,13 +23,15 @@
     "react-dom": "^19.3.1"
   },
   "devDependencies": {
-    "@types/node": "^24.19.2",
+    "@cloudflare/vite-plugin": "^1.69.1",
+    "@types/node": "^26",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
     "oxlint": "^1.90.0",
     "prettier": "^3.10.1",
     "typescript": "~7.0.2",
-    "vite": "^8.3.6"
+    "vite": "^8.3.6",
+    "wrangler": "^4.161.0"
   }
 }
