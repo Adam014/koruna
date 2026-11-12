@@ -29,9 +29,10 @@ Bun is the package manager and script runner (`packageManager` in `package.json`
   Bun's own test runner, which has no `vi.stubGlobal` or jsdom and fails
   ([Vitest guide](https://vitest.dev/guide/))
 - `bun run test:coverage` – tests + coverage; `src/rates/` must stay at 100 % (CI enforces it)
-- `bun run test:e2e` – Playwright end-to-end test of the main flow (`e2e/`), against
-  the production build with the CNB file served from the fixture; first run
-  `bunx playwright install chromium`
+- `bun run test:e2e` – Playwright end-to-end test of the main flow (`e2e/`) in
+  Chromium, Firefox, WebKit and two phones, against the production build with
+  the CNB file served from the fixture; first run
+  `bunx playwright install chromium firefox webkit`
 - `bun run build` – typecheck + production build into `dist/`
 - `bun run cf-typegen` – regenerate `worker-configuration.d.ts` after changing `wrangler.jsonc`
 

@@ -47,8 +47,8 @@ jobs:
         run: bunx wrangler types --check
       - name: Build (includes typecheck)
         run: bun run build
-      - name: Install Playwright browser
-        run: bunx playwright install --with-deps chromium
+      - name: Install Playwright browsers
+        run: bunx playwright install --with-deps chromium firefox webkit
       - name: End-to-end test of the main flow
         run: bun run test:e2e
       - name: Upload Playwright traces

@@ -14,8 +14,17 @@ export default defineConfig({
     baseURL: `http://localhost:${PORT}`,
     trace: 'on-first-retry',
   },
-  // One engine keeps CI fast; the flow uses no engine-specific features.
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  // All three engines and two phones: the currency select takes a different
+  // path where the customizable select is missing (Firefox, Safari), and the
+  // layout changes at phone width.
+  // https://playwright.dev/docs/test-projects
+  projects: [
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+    { name: 'mobile-chrome', use: { ...devices['Pixel 7'] } },
+    { name: 'mobile-safari', use: { ...devices['iPhone 15'] } },
+  ],
   webServer: {
     command: `bunx vite build && bunx vite preview --port ${PORT} --strictPort`,
     url: `http://localhost:${PORT}`,
