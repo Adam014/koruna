@@ -22,7 +22,8 @@ export interface DailyRates {
   date: string
   /** Sequence number of the fixing in the year. */
   sequence: number
-  rates: Rate[]
+  /** Never empty: the parser rejects a file without rates. */
+  rates: [Rate, ...Rate[]]
 }
 
 const COLUMNS = 'Country|Currency|Amount|Code|Rate'
@@ -63,11 +64,10 @@ export function parseDailyRates(text: string): DailyRates {
   }
 
   const { date, sequence } = parseHeader(header)
-  const rates = rows.map(parseRow)
-  if (rates.length === 0)
-    throw new RatesParseError('The rates file has no rates')
+  const [first, ...rest] = rows.map(parseRow)
+  if (!first) throw new RatesParseError('The rates file has no rates')
 
-  return { date, sequence, rates }
+  return { date, sequence, rates: [first, ...rest] }
 }
 
 function parseHeader(line: string): Pick<DailyRates, 'date' | 'sequence'> {
