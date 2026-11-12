@@ -11,11 +11,10 @@ node_modules
 dist
 dist-ssr
 coverage
+*.local
 
 # Playwright
 test-results/
-playwright-report/
-*.local
 
 # Editor directories and files
 .vscode/*
