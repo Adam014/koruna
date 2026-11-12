@@ -215,6 +215,9 @@ export function Converter({ rates }: Pick<DailyRates, 'rates'>) {
     text: '',
     caret: null,
   })
+  const [code, setCode] = useState(
+    () => rates.find((r) => r.code === 'EUR')?.code ?? rates[0].code,
+  )
   const amountRef = useRef<HTMLInputElement>(null)
 
   useLayoutEffect(() => {
@@ -223,9 +226,6 @@ export function Converter({ rates }: Pick<DailyRates, 'rates'>) {
       field.setSelectionRange(amount.caret, amount.caret)
     }
   }, [amount])
-  const [code, setCode] = useState(
-    () => rates.find((r) => r.code === 'EUR')?.code ?? rates[0].code,
-  )
 
   // A refetch could drop the chosen currency; fall back instead of crashing.
   const rate = rates.find((r) => r.code === code) ?? rates[0]
