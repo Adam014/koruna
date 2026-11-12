@@ -73,6 +73,13 @@ const Input = styled.input`
   }
 `
 
+// Feature check for the customizable select (CSS.supports is missing in
+// jsdom, so tests take the native path).
+const customizableSelect =
+  typeof CSS !== 'undefined' &&
+  typeof CSS.supports === 'function' &&
+  CSS.supports('appearance', 'base-select')
+
 // Customizable select where supported: the options and the closed select
 // show the flag. Other browsers keep the native select, with the flag of the
 // chosen currency drawn beside its text (Lead).
@@ -273,10 +280,14 @@ export function Converter({ rates }: Pick<DailyRates, 'rates'>) {
               value={rate.code}
               onChange={(event) => setCode(event.target.value)}
             >
-              {/* Shows the chosen option, flag included (customizable select). */}
-              <button type="button">
-                <selectedcontent />
-              </button>
+              {/* Shows the chosen option, flag included. Only where the
+                  browser knows <selectedcontent>; elsewhere React would warn
+                  about an unknown element. */}
+              {customizableSelect && (
+                <button type="button">
+                  <selectedcontent />
+                </button>
+              )}
               {rates.map((r) => (
                 <option key={r.code} value={r.code}>
                   <Flag currency={r.code} />
