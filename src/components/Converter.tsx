@@ -120,25 +120,28 @@ const Value = styled.span<{ $empty?: boolean }>`
 // input. <output> is a live region (role status), so screen readers hear it.
 export function Converter({ rates }: Pick<DailyRates, 'rates'>) {
   const id = useId()
-  const [text, setText] = useState('')
+  // The caret lives in state with the text: every edit is a new object, so
+  // the effect also runs when formatting gives back the same text (a typed
+  // space) and React has reset the caret to the end.
+  const [amount, setAmount] = useState<{ text: string; caret: number | null }>({
+    text: '',
+    caret: null,
+  })
   const amountRef = useRef<HTMLInputElement>(null)
-  // Where the caret belongs after the formatted text is rendered.
-  const caret = useRef<number | null>(null)
 
   useLayoutEffect(() => {
     const field = amountRef.current
-    if (field && caret.current !== null && document.activeElement === field) {
-      field.setSelectionRange(caret.current, caret.current)
+    if (field && amount.caret !== null && document.activeElement === field) {
+      field.setSelectionRange(amount.caret, amount.caret)
     }
-    caret.current = null
-  }, [text])
+  }, [amount])
   const [code, setCode] = useState(
     () => rates.find((r) => r.code === 'EUR')?.code ?? rates[0].code,
   )
 
   // A refetch could drop the chosen currency; fall back instead of crashing.
   const rate = rates.find((r) => r.code === code) ?? rates[0]
-  const input = parseCzkAmount(text)
+  const input = parseCzkAmount(amount.text)
 
   return (
     <Card as="form" onSubmit={(event) => event.preventDefault()}>
@@ -151,21 +154,20 @@ export function Converter({ rates }: Pick<DailyRates, 'rates'>) {
               inputMode="decimal"
               autoComplete="off"
               placeholder="0"
-              value={text}
+              value={amount.text}
               ref={amountRef}
               onChange={(event) => {
                 const { value, selectionStart } = event.target
                 const { nativeEvent } = event
                 const edit = editAmountInput(
-                  text,
+                  amount.text,
                   value,
                   selectionStart ?? value.length,
                   nativeEvent instanceof InputEvent
                     ? nativeEvent.inputType
                     : '',
                 )
-                caret.current = edit.caret
-                setText(edit.text)
+                setAmount(edit)
               }}
               aria-invalid={input.kind === 'invalid'}
               aria-describedby={
@@ -175,7 +177,9 @@ export function Converter({ rates }: Pick<DailyRates, 'rates'>) {
             <Suffix aria-hidden="true">CZK</Suffix>
           </Box>
           {input.kind === 'invalid' && (
-            <ErrorText id={`${id}-error`}>{input.message}</ErrorText>
+            <ErrorText id={`${id}-error`} role="alert">
+              {input.message}
+            </ErrorText>
           )}
         </Field>
         <Field>

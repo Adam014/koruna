@@ -32,6 +32,12 @@ const Strip = styled.span<{ $digit: number }>`
   }
 `
 
+// The visible copy: hidden from screen readers and not selectable, so copying
+// the result takes the plain text, not every 0–9 column.
+const Columns = styled.span`
+  user-select: none;
+`
+
 const DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
 /**
@@ -43,7 +49,7 @@ export function RollingNumber({ text }: { text: string }) {
   return (
     <>
       <VisuallyHidden>{text}</VisuallyHidden>
-      <span aria-hidden="true">
+      <Columns aria-hidden="true">
         {words.map((word, w) => (
           <span key={`${words.length - w}`}>
             {w > 0 && ' '}
@@ -67,7 +73,7 @@ export function RollingNumber({ text }: { text: string }) {
             </Word>
           </span>
         ))}
-      </span>
+      </Columns>
     </>
   )
 }

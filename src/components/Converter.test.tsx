@@ -44,11 +44,27 @@ describe('Converter', () => {
     expect(amount()).toHaveValue('100\u00a0000')
   })
 
+  it('keeps the caret in place when a typed space changes nothing', async () => {
+    render(<Converter rates={rates} />)
+    await userEvent.type(amount(), '1000')
+
+    // A space after the "1" is dropped by the formatting; the next digit
+    // must still land there, not at the end.
+    await userEvent.type(amount(), ' 7', {
+      initialSelectionStart: 1,
+      initialSelectionEnd: 1,
+    })
+    expect(amount()).toHaveValue('17\u00a0000')
+  })
+
   it('explains an invalid amount and shows no result', async () => {
     render(<Converter rates={rates} />)
     await userEvent.type(amount(), '1,000.50')
 
     expect(amount()).toBeInvalid()
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'Enter digits with up to 2 decimal places, e.g. 1 250.50',
+    )
     expect(amount()).toHaveAccessibleDescription(
       'Enter digits with up to 2 decimal places, e.g. 1 250.50',
     )
