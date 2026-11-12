@@ -65,9 +65,11 @@ const Td = styled.td<{ $numeric?: boolean }>`
   ${cell}
 `
 
-// Reads "100 JPY = 13.783" under the "Rate (CZK)" header. The "=" is drawn by CSS at the cell's right
-// edge, so it lines up down the column and screen readers, which get the
-// column headers, skip it.
+// Reads "100 JPY = 13.783" under the "Rate (CZK)" header. The "=" is drawn by
+// CSS at the cell's right edge, so it lines up down the column. Its empty alt
+// text ("/ ''") keeps it out of what screen readers announce; the column
+// headers already say what the numbers are.
+// https://www.w3.org/TR/css-content-3/#alt
 const equalsGap = css`
   position: relative;
   padding-right: 48px;
@@ -86,6 +88,7 @@ const AmountTd = styled(Td)`
 
   &::after {
     content: '=';
+    content: '=' / '';
     position: absolute;
     right: 16px;
     color: ${theme.colors.muted};

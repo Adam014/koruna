@@ -73,12 +73,10 @@ const Input = styled.input`
   }
 `
 
-// Feature check for the customizable select (CSS.supports is missing in
-// jsdom, so tests take the native path).
-const customizableSelect =
-  typeof CSS !== 'undefined' &&
-  typeof CSS.supports === 'function' &&
-  CSS.supports('appearance', 'base-select')
+// Whether the browser knows <selectedcontent> (customizable select). Where
+// it does not (Firefox, older Safari, jsdom in tests), the element would be
+// unknown and React warns about it, so it is not rendered there.
+const customizableSelect = 'HTMLSelectedContentElement' in globalThis
 
 // Customizable select where supported: the options and the closed select
 // show the flag. Other browsers keep the native select, with the flag of the
