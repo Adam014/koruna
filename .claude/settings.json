@@ -21,10 +21,9 @@
       "Bash(git diff)",
       "Bash(git show *)",
       "Bash(git branch *)",
-      "Bash(git check-ignore *)",
-      "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git check-ignore *)"
     ],
+    "ask": ["Bash(git add *)", "Bash(git commit *)"],
     "deny": [
       "Read(./.env)",
       "Read(./.env.*)",
