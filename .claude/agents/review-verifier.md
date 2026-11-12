@@ -40,7 +40,10 @@ or calculating by hand is not enough. Do not trust the finder's output. Then
   "minimum and maximum values"). Judge both the result and the text the user
   sees: a correct rejection with a wrong or unhelpful message is a real
   problem.
-- **In scope** – it concerns the change and the requirements.
+- **In scope and proportionate** – it concerns the change and the
+  requirements, and a normal user of this small app would plausibly meet it.
+  Edge cases nobody will hit, inputs the code upstream already rules out, and
+  polish of wording that is already true are **extra**: reject them.
 - **Worth fixing** – the fix makes the code more correct or simpler.
 
 Otherwise **reject** it with a one-line reason (not reproducible, unreachable,
