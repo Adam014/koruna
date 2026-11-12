@@ -85,7 +85,8 @@ browser ──GET /api/rates──▶ Worker ──▶ cnb.cz daily.txt
   retries a failed load once; a failed background refetch keeps the rates
   already shown.
 - **Hosting.** One Cloudflare Worker serves the built app as static assets and
-  the API. CI deploys it from `main` only after every check passes, then
+  the API. [`public/_headers`](public/_headers) sets the security headers
+  (a strict CSP among them) and a year of caching for hashed assets. CI deploys it from `main` only after every check passes, then
   smoke tests the live site.
 
 ## Decisions

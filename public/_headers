@@ -1,0 +1,21 @@
+# Headers for the static assets (the app). /api/* responses come from the
+# Worker and set their own headers. Format and limits:
+# https://developers.cloudflare.com/workers/static-assets/headers/
+#
+# CSP: the only inline script is the colour scheme snippet in index.html,
+# allowed by its hash (src/headers.test.ts fails if the two drift apart).
+# styled-components inserts <style> tags at runtime, so styles need
+# 'unsafe-inline'.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-4Uu4UdDjamZAGtUi9cSj8YiMhxcB1INgtKsHEohvQm8='; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'
+  Strict-Transport-Security: max-age=31536000
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+# Vite puts a content hash in every file name under /assets, so a file never
+# changes and can be cached for a year. A name that does not exist gets the
+# SPA's index.html with the same header; only a hand-typed URL can ask for one,
+# since every page references the hashed names it was built with.
+# https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching#cache_busting
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
