@@ -22,6 +22,7 @@ Czech koruna (CZK) into any of the listed currencies.
 | What                    | Where                                                                                           |
 | ----------------------- | ----------------------------------------------------------------------------------------------- |
 | Scope (the brief)       | [`docs/requirements.md`](docs/requirements.md)                                                  |
+| Decisions and why       | [`docs/decisions/`](docs/decisions/) (below)                                                    |
 | Parsing the CNB file    | [`src/rates/parse.ts`](src/rates/parse.ts)                                                      |
 | Conversion              | [`src/rates/convert.ts`](src/rates/convert.ts)                                                  |
 | Input and number format | [`src/rates/format.ts`](src/rates/format.ts)                                                    |
@@ -59,28 +60,45 @@ Use `bun run test`, not `bun test`: the latter is Bun's own test runner.
 
 ```
 browser ──GET /api/rates──▶ Worker ──▶ cnb.cz daily.txt
-   │                          │
-   │                          └ validates, caches 5 min, drops CNB headers
-   └ parses the text, converts, renders (React + TanStack Query)
+   │          (JSON)          │
+   │                          └ parses, caches 5 min, keeps the last good copy
+   └ converts, renders (React + TanStack Query)
 ```
 
 - **Same-origin proxy.** The browser cannot call cnb.cz directly: its CORS
   header never allows a third-party origin. A small Cloudflare Worker fetches
-  the file and returns it as plain text. It only answers `GET /api/rates`,
-  ignores query strings (no open proxy, no cache pollution), times out after
-  5 s and returns 502 if CNB answers with anything that is not the rates file.
-- **Parsing on the client.** Parsing and conversion are pure functions in
-  `src/rates/`, fully unit tested against a real CNB file. The Worker stays
-  free of logic.
+  the file, parses it and returns the rates as JSON. It only answers
+  `GET /api/rates`, ignores query strings (no open proxy, no cache pollution)
+  and times out after 5 s.
+- **Parsing at the boundary.** The Worker parses the file with the same pure,
+  fully unit tested function the rest of the domain logic lives next to
+  (`src/rates/`). A file that is not valid rates never reaches the cache or
+  the browser. The first version parsed in the browser; ADR 0007 explains the
+  move.
 - **The `Amount` column.** CNB quotes some currencies per 100 or 1000 units
   (JPY, HUF, IDR…), so the conversion is `czk * amount / rate`, not
   `czk / rate`.
-- **Caching.** CNB publishes once per working day around 14:30. TanStack Query
-  treats the rates as fresh for 30 minutes and retries a failed load once; a
-  failed background refetch keeps the rates already shown.
+- **Caching.** CNB publishes once per working day around 14:30. The Worker
+  caches the rates for 5 minutes and keeps the last good copy for a week: if
+  CNB is down, visitors get that copy, labelled with its fixing date, instead
+  of an error. TanStack Query treats the rates as fresh for 30 minutes and
+  retries a failed load once; a failed background refetch keeps the rates
+  already shown.
 - **Hosting.** One Cloudflare Worker serves the built app as static assets and
   the API. CI deploys it from `main` only after every check passes, then
   smoke tests the live site.
+
+## Decisions
+
+Recorded as [MADR](https://adr.github.io/madr/) records with sources:
+
+1. [Load CNB daily.txt through a same-origin Worker](docs/decisions/0001-cnb-daily-txt-through-a-same-origin-worker.md)
+2. [Parse the CNB file in the browser](docs/decisions/0002-parse-the-cnb-file-in-the-browser.md) (superseded by 0007)
+3. [Host on Cloudflare Workers, deploy from GitHub Actions](docs/decisions/0003-cloudflare-workers-deployed-from-ci.md)
+4. [Cache the rates to match a once-a-day fixing](docs/decisions/0004-cache-the-rates-for-a-daily-fixing.md)
+5. [Money as a float, rounded once by Intl](docs/decisions/0005-money-as-float-rounded-once-by-intl.md)
+6. [Bun, oxlint and Prettier for tooling](docs/decisions/0006-bun-oxlint-and-prettier.md)
+7. [Parse in the Worker and serve JSON](docs/decisions/0007-parse-in-the-worker-and-serve-json.md)
 
 ## Tests
 
@@ -88,11 +106,12 @@ browser ──GET /api/rates──▶ Worker ──▶ cnb.cz daily.txt
   input parsing and number formatting. 100 % coverage, enforced in CI.
 - **Components** (Testing Library, jsdom): the converter, the rates table,
   the theme switch and the whole app with loading, error and retry.
-- **Worker** (`@cloudflare/vitest-plugin`, in workerd): response and headers,
-  caching, HEAD, 404 / 405, and 502 when CNB is down or returns something else.
+- **Worker** (`@cloudflare/vitest-plugin`, in workerd): JSON and headers,
+  caching, HEAD, 404 / 405, the last good copy when CNB is down, and 502 when
+  there is none.
 - **End to end** (Playwright): the main flow against the production build in
   three browser engines and on two phones. `/api/rates` is served from the
-  fixture so the test is deterministic.
+  parsed fixture so the test is deterministic.
 
 ## Stack
 
