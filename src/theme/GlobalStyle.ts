@@ -36,8 +36,13 @@ export const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
 
-  body {
+  /* Spacing comes from layout gaps, not from default element margins.
+     https://www.joshwcomeau.com/css/custom-css-reset/ */
+  * {
     margin: 0;
+  }
+
+  body {
     font-family: ${theme.font.body};
     font-size: 100%;
     line-height: 1.5;
@@ -70,5 +75,11 @@ export const GlobalStyle = createGlobalStyle`
 
   :disabled {
     cursor: default;
+  }
+
+  /* One keyboard focus ring for every control. */
+  :focus-visible {
+    outline: 2px solid ${theme.colors.accent};
+    outline-offset: 2px;
   }
 `

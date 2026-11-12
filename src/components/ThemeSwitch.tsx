@@ -42,7 +42,7 @@ const Track = styled.button`
   padding: 0;
   border: 0;
   border-radius: 999px;
-  background: ${theme.colors.track};
+  background: ${theme.colors.border};
   transition: background-color 0.2s ease;
 
   &::after {
@@ -66,11 +66,6 @@ const Track = styled.button`
 
   &[aria-checked='true']::after {
     transform: translateX(20px);
-  }
-
-  &:focus-visible {
-    outline: 2px solid ${theme.colors.accent};
-    outline-offset: 2px;
   }
 
   @media (prefers-reduced-motion: reduce) {
