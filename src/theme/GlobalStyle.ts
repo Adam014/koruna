@@ -77,9 +77,11 @@ export const GlobalStyle = createGlobalStyle`
     cursor: default;
   }
 
-  /* One keyboard focus ring for every control. */
+  /* One keyboard focus ring for every control. The darker gold keeps 3:1
+     against the page in light mode (WCAG 1.4.11); the lighter one does not.
+     https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html */
   :focus-visible {
-    outline: 2px solid ${theme.colors.accent};
+    outline: 2px solid ${theme.colors.accentText};
     outline-offset: 2px;
   }
 `
