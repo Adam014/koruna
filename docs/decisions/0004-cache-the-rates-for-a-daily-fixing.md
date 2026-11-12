@@ -44,8 +44,8 @@ to rely on.
 - Good, because a tab left open picks up the new fixing on refocus after 30 minutes.
 - Good, because a failed background refetch keeps the rates already shown.
 - Good, because a CNB outage shows the last fixing, with its date, instead of
-  an error; this is how public rate services such as Frankfurter behave
-  (`stale-if-error=86400`).
+  an error; Frankfurter, a public reference-rate API, does the same
+  (`stale-if-error=86400` on `api.frankfurter.dev/v2/rates`).
 - Bad, because during an outage each request waits for the 5 s CNB timeout
   before it gets the last good copy.
 - Bad, because the Cache API is per data centre: a location that never saw a
@@ -58,4 +58,4 @@ to rely on.
 - Status checks, data first: https://tkdodo.eu/blog/status-checks-in-react-query
 - Workers Cache API (per data centre, no `stale-if-error`): https://developers.cloudflare.com/workers/runtime-apis/cache/
 - MDN, Cache-Control (`stale-if-error`): https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control
-- Frankfurter (public reference-rate API): https://frankfurter.dev/
+- Frankfurter v2 rates (see its `Cache-Control`): https://api.frankfurter.dev/v2/rates?base=CZK

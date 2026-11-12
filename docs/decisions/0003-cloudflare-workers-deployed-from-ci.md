@@ -35,7 +35,9 @@ the GitHub environment `production`, so only that job can read them.
 ### Consequences
 
 - Good, because the Worker runs locally inside Vite (`@cloudflare/vite-plugin`),
-  so dev, e2e and production use the same runtime.
+  in the same runtime as in production. The end-to-end test serves
+  `/api/rates` from a fixture, so the Worker itself is covered by its own
+  tests in workerd and by the smoke test after each deploy.
 - Good, because the custom domain gets DNS and TLS from Cloudflare.
 - Bad, because there are no per-PR preview deployments.
 - Bad, because the zone needs a Cache Rule ("respect origin TTL"); without it

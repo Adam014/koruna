@@ -7,10 +7,9 @@ date: 2026-11-12
 
 ## Context and Problem Statement
 
-ADR 0002 parsed the CNB file in the browser and kept the Worker a thin proxy.
-It was chosen on purpose as a first step: build the parser as a pure, fully
-tested function first, and decide where it runs once it was proven. With the
-app working end to end, the split showed two weaknesses. The input was checked
+ADR 0002 parsed the CNB file in the browser and kept the Worker a thin proxy,
+as a first step (see its note). With the app working end to end, the split
+showed two weaknesses. The input was checked
 in two places (the Worker looked at the column header, the browser did the
 real parse), and a file with a valid header but broken rows could be cached.
 The public rate services we looked at (Frankfurter, Wise, XE) parse on the

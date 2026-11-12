@@ -42,7 +42,6 @@ response contains is decided in ADR 0007, caching in ADR 0004.
 ## More Information
 
 - OWASP, SSRF prevention (fixed destination, request built in code): https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html
-
 - CNB daily.txt: https://www.cnb.cz/en/financial-markets/foreign-exchange-market/central-bank-exchange-rate-fixing/central-bank-exchange-rate-fixing/daily.txt
 - CNB JSON API: https://api.cnb.cz/cnbapi/exrates/daily?lang=EN
 - MDN, Access-Control-Allow-Origin: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Allow-Origin
