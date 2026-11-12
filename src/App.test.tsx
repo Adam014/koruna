@@ -41,6 +41,10 @@ describe('App', () => {
       await screen.findByText(/CNB rates of 12 November 2026/),
     ).toBeInTheDocument()
 
+    expect(
+      screen.getByRole('table', { name: 'Exchange rates' }),
+    ).toBeInTheDocument()
+
     await userEvent.type(screen.getByLabelText('Amount in CZK'), '1000')
     expect(screen.getByRole('status')).toHaveTextContent('EUR 41.01')
   })

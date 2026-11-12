@@ -7,6 +7,12 @@ import { theme } from '../theme/theme'
 import { Card } from './Card'
 import { Converter } from './Converter'
 import { Muted } from './Muted'
+import { RatesTable } from './RatesTable'
+
+const Stack = styled.div`
+  display: grid;
+  gap: 48px;
+`
 
 const Section = styled.section`
   display: grid;
@@ -34,25 +40,31 @@ const RetryButton = styled.button`
   background: ${theme.colors.bg};
 `
 
-/** The converter section: loads the CNB rates, then shows the converter. */
+/**
+ * Loads the CNB rates, then shows the converter and the list of rates. Until
+ * the rates are there, the converter section shows the loading or error state.
+ */
 export function RatesPanel() {
   const query = useQuery(ratesQuery)
   const { data } = query
 
   return (
-    <Section aria-labelledby="convert-heading">
-      <Intro>
-        <Heading id="convert-heading">Convert Czech koruna</Heading>
-        {data && (
-          <Muted>
-            CNB rates of {formatFixingDate(data.date)}.
-            {!isFixingFromToday(data.date) &&
-              ' The latest available; CNB publishes new rates on working days around 14:30.'}
-          </Muted>
-        )}
-      </Intro>
-      <RatesBody query={query} />
-    </Section>
+    <Stack>
+      <Section aria-labelledby="convert-heading">
+        <Intro>
+          <Heading id="convert-heading">Convert Czech koruna</Heading>
+          {data && (
+            <Muted>
+              CNB rates of {formatFixingDate(data.date)}.
+              {!isFixingFromToday(data.date) &&
+                ' The latest available; CNB publishes new rates on working days around 14:30.'}
+            </Muted>
+          )}
+        </Intro>
+        <RatesBody query={query} />
+      </Section>
+      {data && <RatesTable rates={data.rates} />}
+    </Stack>
   )
 }
 
