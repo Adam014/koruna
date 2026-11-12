@@ -65,7 +65,9 @@ them and the dependencies current.
 - styled-components: transient `$props`; theme typed via `DefaultTheme`.
 - UI: text never smaller than 14 px; every clickable element has `cursor: pointer`;
   no icons on decorative background shapes.
-- Design: Inter (variable, self-hosted via `@fontsource-variable/inter`); gold
+- Design: Bricolage Grotesque for headings, Geist for text and numbers (tabular
+  figures), both self-hosted via `@fontsource-variable/*`. Tokens live only in
+  `src/theme/theme.ts`; components use `theme.colors.x` (CSS vars). Gold
   accent from the logo, `#c8901a` light / `#f2b93b` dark, `#8a5d0b` for gold text
   on light backgrounds (contrast). Light and dark mode.
 - Keep it simple: no abstraction without a second use, no speculative options.
