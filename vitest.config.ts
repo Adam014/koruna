@@ -16,6 +16,10 @@ export default defineConfig({
           include: ['src/**/*.test.{ts,tsx}'],
           environment: 'node',
           setupFiles: ['src/test/setup.ts'],
+          // West of UTC, so a date shifted by the local time zone shows up as
+          // the previous day. CI runs in UTC and developers often east of
+          // it, where such a bug would never fail a test.
+          env: { TZ: 'America/New_York' },
         },
       },
       {
