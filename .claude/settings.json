@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "permissions": {
+    "allow": [
+      "Bash(bun run typecheck)",
+      "Bash(bun run lint)",
+      "Bash(bun run format)",
+      "Bash(bun run format:check)",
+      "Bash(bun run build)"
+    ],
+    "ask": ["Bash(git commit *)"],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./.dev.vars*)",
+      "Bash(git push)",
+      "Bash(git push *)",
+      "Bash(bun run deploy)",
+      "Bash(bun run deploy *)",
+      "Bash(wrangler deploy)",
+      "Bash(wrangler deploy *)",
+      "Bash(bunx wrangler deploy)",
+      "Bash(bunx wrangler deploy *)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // empty' | xargs -I{} \"$CLAUDE_PROJECT_DIR\"/node_modules/.bin/prettier --write --ignore-unknown --log-level warn {}"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && bun run typecheck 1>&2 || exit 2"
+          }
+        ]
+      }
+    ]
+  }
+}

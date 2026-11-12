@@ -29,3 +29,7 @@ docs/research/
 # Cloudflare
 .wrangler
 .dev.vars*
+
+# Claude Code (personal)
+CLAUDE.local.md
+.claude/settings.local.json
