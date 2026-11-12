@@ -2,3 +2,4 @@ bun.lock
 dist
 docs/research
 worker-configuration.d.ts
+coverage

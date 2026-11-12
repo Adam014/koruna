@@ -41,6 +41,8 @@ jobs:
         run: bun run format:check
       - name: Lint
         run: bun run lint
+      - name: Unit tests (100 % coverage of domain logic)
+        run: bun run test:coverage
       - name: Check Worker types are up to date
         run: bunx wrangler types --check
       - name: Build (includes typecheck)

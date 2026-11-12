@@ -24,6 +24,9 @@ Bun is the package manager and script runner (`packageManager` in `package.json`
 - `bun run typecheck` – `tsc -b` over app, Node config and Worker
 - `bun run lint` – oxlint
 - `bun run format` / `bun run format:check` – Prettier
+- `bun run test` / `bun run test:watch` – Vitest unit tests (`src/**/*.test.ts`);
+  one file: `bun run test src/rates/parse.test.ts`
+- `bun run test:coverage` – tests + coverage; `src/rates/` must stay at 100 % (CI enforces it)
 - `bun run build` – typecheck + production build into `dist/`
 - `bun run cf-typegen` – regenerate `worker-configuration.d.ts` after changing `wrangler.jsonc`
 
@@ -77,7 +80,8 @@ them and the dependencies current.
    verified, say so explicitly.
 3. **Review before proposing a commit** (`/review-change`): check the diff against
    the requirements, the ADRs, this file and the research, and run
-   `typecheck`, `lint`, `format:check` and `build`.
+   `typecheck`, `lint`, `format:check`, `test:coverage` and `build`. New logic
+   comes with tests in the same commit.
 4. **UI changes are checked in a real browser** (light, dark, phone width) before
    they are called done, including `cursor: pointer` on every clickable element.
 5. **Report briefly**: what changed, what was verified, what is open.

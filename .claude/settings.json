@@ -10,6 +10,9 @@
       "Bash(bun run lint)",
       "Bash(bun run format)",
       "Bash(bun run format:check)",
+      "Bash(bun run test)",
+      "Bash(bun run test *)",
+      "Bash(bun run test:coverage)",
       "Bash(bun run build)"
     ],
     "ask": ["Bash(git commit *)"],

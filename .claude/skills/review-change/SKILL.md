@@ -12,7 +12,8 @@ Report only real problems you can point to in the diff; no speculation.
 
 1. Look at the change: `git status --short` and `git diff` (plus new files).
 2. Run the checks and note any failure:
-   `bun run typecheck`, `bun run lint`, `bun run format:check`, `bun run build`.
+   `bun run typecheck`, `bun run lint`, `bun run format:check`,
+   `bun run test:coverage`, `bun run build`.
    If `wrangler.jsonc` changed, also `bunx wrangler types --check`.
 3. Check the diff against, in this order:
    - `docs/requirements.md` – does it serve a requirement (R1–R7)? Anything out of scope?
@@ -24,6 +25,8 @@ Report only real problems you can point to in the diff; no speculation.
 4. Look for the usual senior-level issues: correctness and edge cases, error
    handling, caching headers, security (secrets, open proxies, CSP), accessibility,
    dead code, unnecessary dependencies or abstractions, missing tests for logic.
+   Tests must assert behaviour (would they fail if the code were wrong?), not
+   just raise coverage.
 5. **Verify, don't guess.** For every claim about a version, default, API or
    config option you are not certain of, check the official docs, the package's
    own schema/types in `node_modules`, or the npm registry. Say which source.
