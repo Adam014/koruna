@@ -10,6 +10,7 @@ import {
 import type { DailyRates } from '../rates/parse'
 import { theme } from '../theme/theme'
 import { Card } from './Card'
+import { Flag } from './Flag'
 import { ChevronDownIcon } from './icons'
 import { Muted } from './Muted'
 import { RollingNumber } from './RollingNumber'
@@ -72,11 +73,80 @@ const Input = styled.input`
   }
 `
 
+// Customizable select where supported: the options and the closed select
+// show the flag. Other browsers keep the native select, with the flag of the
+// chosen currency drawn beside its text (Lead).
+// https://developer.chrome.com/blog/a-customizable-select
 const Select = styled.select`
   ${control}
+  padding-left: 52px;
   padding-right: 44px;
   appearance: none;
   text-overflow: ellipsis;
+
+  @supports (appearance: base-select) {
+    &,
+    &::picker(select) {
+      appearance: base-select;
+    }
+
+    padding-left: 16px;
+
+    &::picker-icon {
+      display: none;
+    }
+
+    selectedcontent,
+    option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* The closed select keeps one line; a long name ends in "…". */
+    selectedcontent {
+      min-width: 0;
+    }
+
+    selectedcontent > span {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    &::picker(select) {
+      max-height: min(360px, 60vh);
+      margin-top: 4px;
+      padding: 6px;
+      border: 1px solid ${theme.colors.line};
+      border-radius: 12px;
+      color: ${theme.colors.text};
+      background: ${theme.colors.surface};
+      box-shadow: 0 8px 24px rgb(0 0 0 / 12%);
+    }
+
+    option {
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    option::checkmark {
+      display: none;
+    }
+
+    /* Gold tints: light for the option under the pointer or keyboard focus,
+       stronger for the chosen one. Text keeps the body colour (contrast). */
+    option:hover,
+    option:focus-visible {
+      background: color-mix(in srgb, ${theme.colors.accent} 14%, transparent);
+    }
+
+    option:checked {
+      font-weight: 600;
+      background: color-mix(in srgb, ${theme.colors.accent} 30%, transparent);
+    }
+  }
 `
 
 const decoration = css`
@@ -90,6 +160,19 @@ const decoration = css`
 const Suffix = styled.span`
   ${decoration}
   font-weight: 600;
+`
+
+// The selected currency's flag, drawn over the left edge of the select.
+const Lead = styled.span`
+  grid-area: 1 / 1;
+  justify-self: start;
+  display: flex;
+  margin-left: 16px;
+  pointer-events: none;
+
+  @supports (appearance: base-select) {
+    display: none;
+  }
 `
 
 const Chevron = styled(ChevronDownIcon)`
@@ -190,12 +273,22 @@ export function Converter({ rates }: Pick<DailyRates, 'rates'>) {
               value={rate.code}
               onChange={(event) => setCode(event.target.value)}
             >
+              {/* Shows the chosen option, flag included (customizable select). */}
+              <button type="button">
+                <selectedcontent />
+              </button>
               {rates.map((r) => (
                 <option key={r.code} value={r.code}>
-                  {r.code} – {r.country} {r.currency}
+                  <Flag currency={r.code} />
+                  <span>
+                    {r.code} – {r.country} {r.currency}
+                  </span>
                 </option>
               ))}
             </Select>
+            <Lead>
+              <Flag currency={rate.code} />
+            </Lead>
             <Chevron />
           </Box>
         </Field>
