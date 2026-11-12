@@ -27,6 +27,11 @@ Bun is the package manager and script runner (`packageManager` in `package.json`
 - `bun run build` – typecheck + production build into `dist/`
 - `bun run cf-typegen` – regenerate `worker-configuration.d.ts` after changing `wrangler.jsonc`
 
+CI (`.github/workflows/ci.yml`) runs the same checks on every PR and push. On
+`main` it deploys the verified build to the `production` environment and smoke
+tests https://momence.stadnik.dev. Actions are pinned by SHA; Dependabot keeps
+them and the dependencies current.
+
 ## Layout
 
 - `src/` – the React app (browser)
