@@ -12,6 +12,9 @@ const tokens = {
     accent: '#c8901a',
     // Darker gold for text on light backgrounds (contrast).
     accentText: '#8a5d0b',
+    // Colour scheme switch: off-state track and knob (3:1 contrast, WCAG 1.4.11).
+    track: '#8f8984',
+    knob: '#ffffff',
   },
   font: {
     body: "'Geist Variable', system-ui, sans-serif",
@@ -30,6 +33,8 @@ export const darkColors: Tokens['colors'] = {
   muted: '#a8a29e',
   accent: '#f2b93b',
   accentText: '#f2b93b',
+  track: '#78716c',
+  knob: '#ffffff',
 }
 
 export const theme = createTheme(tokens)

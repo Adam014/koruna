@@ -13,11 +13,21 @@ export const GlobalStyle = createGlobalStyle`
     color-scheme: light dark;
   }
 
+  /* Dark follows the system unless the switch chose light; [data-theme]
+     makes both selectors outrank theme.GlobalStyle's plain :root. */
   @media (prefers-color-scheme: dark) {
-    /* Doubled :root outranks the light values from theme.GlobalStyle in any order. */
-    :root:root {
+    :root:not([data-theme='light']) {
       ${darkVars}
     }
+  }
+
+  :root[data-theme='dark'] {
+    color-scheme: dark;
+    ${darkVars}
+  }
+
+  :root[data-theme='light'] {
+    color-scheme: light;
   }
 
   *,

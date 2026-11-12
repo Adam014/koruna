@@ -10,6 +10,16 @@
     />
     <meta name="color-scheme" content="light dark" />
     <title>Koruna</title>
+    <!-- Apply the saved colour scheme before first paint (see src/theme/colorScheme.ts). -->
+    <script>
+      try {
+        const scheme = localStorage.getItem('koruna-color-scheme')
+        if (scheme === 'light' || scheme === 'dark')
+          document.documentElement.dataset.theme = scheme
+      } catch {
+        // Storage blocked (e.g. privacy settings): follow the system scheme.
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

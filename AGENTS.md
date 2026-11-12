@@ -65,6 +65,9 @@ them and the dependencies current.
 - styled-components: transient `$props`; theme typed via `DefaultTheme`.
 - UI: text never smaller than 14 px; every clickable element has `cursor: pointer`;
   no icons on decorative background shapes.
+- Icons: every icon is an exported component in `src/components/icons.tsx`
+  (currentColor, `aria-hidden`); import it from there, never inline an SVG icon
+  elsewhere.
 - Design: Bricolage Grotesque for headings, Geist for text and numbers (tabular
   figures), both self-hosted via `@fontsource-variable/*`. Tokens live only in
   `src/theme/theme.ts`; components use `theme.colors.x` (CSS vars). Gold
