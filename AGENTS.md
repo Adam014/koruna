@@ -81,10 +81,10 @@ them and the dependencies current.
 3. **Review before proposing a commit** (`/review-change`): check the diff against
    the requirements, the ADRs, this file and the research, and run
    `typecheck`, `lint`, `format:check`, `test:coverage` and `build`. New logic
-   comes with tests in the same commit. Then an independent reviewer with fresh
-   context (`.claude/agents/code-reviewer.md`) reviews the change. Each finding
-   is weighed on evidence: fix the real ones, reject speculative or pointless
-   ones with a one-line reason.
+   comes with tests in the same commit. Then independent agents with fresh
+   context review it: two `review-finder`s list candidates, a `review-verifier`
+   confirms or rejects each (`.claude/agents/`). Confirmed findings get fixed.
+   After changing these agents, run `.claude/review-evals/`.
 4. **UI changes are checked in a real browser** (light, dark, phone width) before
    they are called done, including `cursor: pointer` on every clickable element.
 5. **Report briefly**: what changed, what was verified, what is open.

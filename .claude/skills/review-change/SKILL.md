@@ -31,10 +31,16 @@ Report only real problems you can point to in the diff; no speculation.
    config option you are not certain of, check the official docs, the package's
    own schema/types in `node_modules`, or the npm registry. Say which source.
 
-6. **Independent review.** Run the `code-reviewer` subagent in a fresh context.
-   Give it only the scope ("review the uncommitted change"), not your own
-   conclusions. Weigh each finding: reproduce it, then fix it or reject it with
-   a reason (speculative, out of scope, preference, not reproducible).
+6. **Independent review** (find, then verify –
+   [Anthropic: Code Review](https://code.claude.com/docs/en/code-review)):
+   1. Run two `review-finder` subagents in parallel with the same brief: the
+      scope ("review the uncommitted change") and how the code will be used.
+      Never add your own conclusions, and never pass a `model` override.
+   2. Merge their candidates into one numbered list (drop exact duplicates;
+      note when both found the same thing).
+   3. Run one `review-verifier` with the same brief plus the merged list.
+   4. Fix every confirmed finding. If you disagree with one, reproduce it and
+      give the evidence; do not drop it silently.
 
 ## Report (short)
 
