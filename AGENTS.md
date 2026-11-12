@@ -24,8 +24,10 @@ Bun is the package manager and script runner (`packageManager` in `package.json`
 - `bun run typecheck` – `tsc -b` over app, Node config and Worker
 - `bun run lint` – oxlint
 - `bun run format` / `bun run format:check` – Prettier
-- `bun run test` / `bun run test:watch` – Vitest unit tests (`src/**/*.test.ts`);
-  one file: `bun run test src/rates/parse.test.ts`
+- `bun run test` / `bun run test:watch` – Vitest unit tests (`src/**/*.test.{ts,tsx}`);
+  one file: `bun run test src/rates/parse.test.ts`. Never `bun test`: it runs
+  Bun's own test runner, which has no `vi.stubGlobal` or jsdom and fails
+  ([Vitest guide](https://vitest.dev/guide/))
 - `bun run test:coverage` – tests + coverage; `src/rates/` must stay at 100 % (CI enforces it)
 - `bun run build` – typecheck + production build into `dist/`
 - `bun run cf-typegen` – regenerate `worker-configuration.d.ts` after changing `wrangler.jsonc`
