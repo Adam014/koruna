@@ -24,7 +24,8 @@ Bun is the package manager and script runner (`packageManager` in `package.json`
 - `bun run typecheck` – `tsc -b` over app, Node config and Worker
 - `bun run lint` – oxlint
 - `bun run format` / `bun run format:check` – Prettier
-- `bun run test` / `bun run test:watch` – Vitest unit tests (`src/**/*.test.{ts,tsx}`);
+- `bun run test` / `bun run test:watch` – Vitest unit tests: app (`src/**/*.test.{ts,tsx}`)
+  and Worker (`worker/*.test.ts`, runs in workerd via `@cloudflare/vitest-plugin`);
   one file: `bun run test src/rates/parse.test.ts`. Never `bun test`: it runs
   Bun's own test runner, which has no `vi.stubGlobal` or jsdom and fails
   ([Vitest guide](https://vitest.dev/guide/))

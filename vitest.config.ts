@@ -1,13 +1,33 @@
+import { cloudflareTest } from '@cloudflare/vitest-plugin'
 import { defineConfig } from 'vitest/config'
 
 // Separate from vite.config.ts so unit tests do not start the Cloudflare
-// Worker runtime. Pure logic runs in Node; component tests opt into jsdom
-// with a `@vitest-environment jsdom` comment.
+// Worker runtime for the app. Two projects:
+// - app: pure logic runs in Node; component tests opt into jsdom with a
+//   `@vitest-environment jsdom` comment.
+// - worker: the Worker runs in workerd, the runtime it has in production.
+//   https://developers.cloudflare.com/workers/testing/vitest-integration/
 export default defineConfig({
   test: {
-    include: ['src/**/*.test.{ts,tsx}'],
-    environment: 'node',
-    setupFiles: ['src/test/setup.ts'],
+    projects: [
+      {
+        test: {
+          name: 'app',
+          include: ['src/**/*.test.{ts,tsx}'],
+          environment: 'node',
+          setupFiles: ['src/test/setup.ts'],
+        },
+      },
+      {
+        plugins: [
+          cloudflareTest({ wrangler: { configPath: './wrangler.jsonc' } }),
+        ],
+        test: {
+          name: 'worker',
+          include: ['worker/**/*.test.ts'],
+        },
+      },
+    ],
     coverage: {
       provider: 'v8',
       include: ['src/rates/**/*.ts'],
