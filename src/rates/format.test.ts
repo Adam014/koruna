@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
   formatFixingDate,
+  editAmountInput,
+  formatAmountInput,
   formatMoney,
   formatRate,
   isFixingFromToday,
@@ -43,7 +45,7 @@ describe('parseCzkAmount', () => {
     (input) => {
       expect(parseCzkAmount(input)).toEqual({
         kind: 'invalid',
-        message: 'Enter a number without thousands separators, e.g. 1250.50',
+        message: 'Enter digits with up to 2 decimal places, e.g. 1 250.50',
       })
     },
   )
@@ -53,10 +55,71 @@ describe('parseCzkAmount', () => {
     (input) => {
       expect(parseCzkAmount(input)).toEqual({
         kind: 'invalid',
-        message: 'Enter at most 1,000,000,000 CZK',
+        message: 'Enter at most 1\u00a0000\u00a0000\u00a0000 CZK',
       })
     },
   )
+})
+
+// Group spaces are no-break spaces; tests write them as "_".
+const nb = (text: string) => text.replace(/_/g, '\u00a0')
+
+describe('formatAmountInput', () => {
+  it.each([
+    ['', ''],
+    ['999', '999'],
+    ['1000', '1_000'],
+    ['1000000', '1_000_000'],
+    ['1 0 0 0 0', '10_000'],
+    ['1234567,5', '1_234_567.5'],
+    ['12,', '12.'],
+    ['1234.', '1_234.'],
+    ['.5', '.5'],
+  ])('formats "%s" as "%s"', (input, output) => {
+    expect(formatAmountInput(input)).toBe(nb(output))
+  })
+
+  it.each(['abc', '1,000.50', '-5'])('leaves "%s" as typed', (input) => {
+    expect(formatAmountInput(input)).toBe(input)
+  })
+})
+
+describe('editAmountInput', () => {
+  it('keeps the caret after the typed digit when a group appears', () => {
+    // "100|" + "0" -> "1_000|"
+    expect(editAmountInput('100', '1000', 4, 'insertText')).toEqual({
+      text: nb('1_000'),
+      caret: 5,
+    })
+    // "1_0|00" + "5" -> "10_5|00"
+    expect(editAmountInput(nb('1_000'), nb('1_0500'), 4, 'insertText')).toEqual(
+      {
+        text: nb('10_500'),
+        caret: 4,
+      },
+    )
+  })
+
+  it('deletes the digit before a group space on Backspace', () => {
+    // "1_|000" Backspace removes the space; the "1" goes with it.
+    expect(
+      editAmountInput(nb('1_000'), '1000', 1, 'deleteContentBackward'),
+    ).toEqual({ text: '000', caret: 0 })
+  })
+
+  it('deletes the digit after a group space on Delete', () => {
+    // "1|_000" Delete removes the space; the next "0" goes with it.
+    expect(
+      editAmountInput(nb('1_000'), '1000', 1, 'deleteContentForward'),
+    ).toEqual({ text: '100', caret: 1 })
+  })
+
+  it('formats a paste and puts the caret at its end', () => {
+    expect(editAmountInput('', '2500000', 7, 'insertFromPaste')).toEqual({
+      text: nb('2_500_000'),
+      caret: 9,
+    })
+  })
 })
 
 describe('formatMoney', () => {
@@ -66,8 +129,8 @@ describe('formatMoney', () => {
   })
 
   it("uses each currency's own decimal places", () => {
-    expect(plain(formatMoney(7255.31, 'JPY'))).toBe('JPY 7,255')
-    expect(plain(formatMoney(1234.5, 'CZK'))).toBe('CZK 1,234.50')
+    expect(plain(formatMoney(7255.31, 'JPY'))).toBe('JPY 7 255')
+    expect(plain(formatMoney(1234.5, 'CZK'))).toBe('CZK 1 234.50')
   })
 
   it('formats the IMF special drawing right (XDR)', () => {
